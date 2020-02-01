@@ -32,7 +32,7 @@ do
 done
 
 
-datadir=${base}/processing/${obsnum}
+datadir=${base}processing/${obsnum}
 
 cd datadir
 

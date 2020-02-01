@@ -38,10 +38,21 @@ cd  ${obsnum}
 outfile="${obsnum}_ms.zip"
 msfile="${obsnum}.ms"
 
-wget -O ${obsnum}_ms.zip "${link}"
+if [[ -e "${outfile}" ]]
+then
+    echo "${outfile} exists, not downloading again"
+elif [[ -e "${msfile}" ]]
+then
+    echo "${msfile} exists, not downloading again"
+else
+    wget -O ${obsnum}_ms.zip "${link}"
+fi
 
-unzip ${outfile}
-
+if [[ -e "${outfile}" ]]
+then
+    unzip -n ${outfile}
+    rm ${outfile}
+fi
 
 }
 

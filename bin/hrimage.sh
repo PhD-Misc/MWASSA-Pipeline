@@ -38,7 +38,7 @@ do
 done
 
 
-datadir=${base}/processing/${obsnum}
+datadir=${base}processing/${obsnum}
 cd datadir
 
 for g in `seq 0 ${timeSteps}`;

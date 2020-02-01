@@ -15,7 +15,7 @@ set -x
 
 obsnum=OBSNUM
 base=BASE
-datadir=${base}/processing/${obsnum}
+datadir=${base}processing/${obsnum}
 cd datadir
 
 rm *.zip
