@@ -34,7 +34,7 @@ done
 
 datadir=${base}processing/${obsnum}
 
-cd datadir
+cd ${datadir}
 
 cotter -norfi -initflag 2 -timeres 2 -freqres 40 *gpubox* -absmem 110 -edgewidth 80 -m ${obsnum}.metafits -o ${obsnum}.ms
 

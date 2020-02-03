@@ -39,7 +39,7 @@ done
 
 
 datadir=${base}processing/${obsnum}
-cd datadir
+cd ${datadir}
 
 for g in `seq 0 ${timeSteps}`;
 do

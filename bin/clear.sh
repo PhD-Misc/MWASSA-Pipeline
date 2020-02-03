@@ -16,7 +16,7 @@ set -x
 obsnum=OBSNUM
 base=BASE
 datadir=${base}processing/${obsnum}
-cd datadir
+cd ${datadir}
 
 rm *.zip
 rm -r ${obsnum}.ms
@@ -27,5 +27,5 @@ for ((i=0;i<10;i++));
 do
     rm *${i}-image.fits
     rm *${i}-dirty.fits
-
+done
 }
