@@ -4,8 +4,8 @@
 #SBATCH -p workq
 #SBATCH --time=8:00:00
 #SBATCH --ntasks=28
-#SBATCH --mem=122GB
-#SBATCH -J cotter
+#SBATCH --mem=124GB
+#SBATCH -J calibrate
 #SBATCH --mail-type FAIL,TIME_LIMIT,TIME_LIMIT_90
 #SBATCH --mail-user sirmcmissile47@gmail.com
 
@@ -20,25 +20,22 @@ set -x
 
 obsnum=OBSNUM
 base=BASE
-calibrationSolution=
+calibrator=
 
 while getopts 'c:' OPTION
 do
     case "$OPTION" in
         c)
-            calibrationSolution=${OPTARG}
+            calibrator=${OPTARG}
             ;;
     esac
 done
 
 
-datadir=${base}processing/${obsnum}
+datadir=${base}/processing/${obsnum}
 
 cd ${datadir}
 
-cotter -norfi -initflag 2 -timeres 2 -freqres 40 *gpubox* -absmem 60 -edgewidth 118 -m ${obsnum}.metafits -o ${obsnum}.ms
-
-applysolutions ${obsnum}.ms ${calibrationSolution}
 
 
 }

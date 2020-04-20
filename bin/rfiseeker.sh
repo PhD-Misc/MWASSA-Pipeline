@@ -1,10 +1,10 @@
 #! /bin/bash -l
 #SBATCH --export=NONE
-#SBATCH -M zeus 
-#SBATCH -p workq
-#SBATCH --time=4:30:00
+#SBATCH -M zeus  
+#SBATCH -p workq 
+#SBATCH --time=16:00:00
 #SBATCH --ntasks=28
-#SBATCH --mem=64GB
+#SBATCH --mem=120GB
 #SBATCH -J RFISeeker
 #SBATCH --mail-type FAIL,TIME_LIMIT,TIME_LIMIT_90
 #SBATCH --mail-user sirmcmissile47@gmail.com
@@ -34,13 +34,9 @@ do
     esac
 done
 
-
-
-
-
 datadir=${base}processing/${obsnum}
 cd ${datadir}
-
+rm noDetections*.csv
 
 for q in $(seq ${timeSteps})
 do
@@ -48,7 +44,8 @@ do
   do
     wait -n $(jobs -p)
   done
-  RFISeeker --obs ${obsnum} --freqChannels ${channels} --seedSigma 6 --floodfillSigma 3 --timeStep ${q} --prefix 6Sigma3floodfill --DSNRS False &
+  RFISeekerNeg --obs ${obsnum} --freqChannels ${channels} --seedSigma 6 --floodfillSigma 1 --timeStep ${q} --prefix Neg6Sigma1Floodfill1p24amin --DSNRS=False &
+  
 done
 
 i=0
@@ -61,6 +58,6 @@ for pid in ${pids[*]}; do
         wait ${pid}
 done
 
-RFICombinedPlot --obs ${obsnum} --timeStep ${timeSteps} --prefix 6Sigma3floodfill --FULLTLE ${tlePath}/FULLTLE.txt --LEOTLE ${tlePath}/LEOTLE.txt --MEOTLE ${tlePath}/MEOTLE.txt --HEOTLE ${tlePath}/HEOTLE.txt
+#RFICombinedPlot --obs ${obsnum} --timeStep ${timeSteps} --prefix 6Sigma3floodfill --FULLTLE ${tlePath}/FULLTLE.txt --LEOTLE ${tlePath}/LEOTLE.txt --MEOTLE ${tlePath}/MEOTLE.txt --HEOTLE ${tlePath}/HEOTLE.txt
 
 }

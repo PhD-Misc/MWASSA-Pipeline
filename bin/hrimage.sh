@@ -2,9 +2,9 @@
 #SBATCH --export=NONE
 #SBATCH -M zeus
 #SBATCH -p workq
-#SBATCH --time=20:00:00
+#SBATCH --time=22:00:00
 #SBATCH --ntasks=28
-#SBATCH --mem=124GB
+#SBATCH --mem=122GB
 #SBATCH -J hrimage
 #SBATCH --mail-type FAIL,TIME_LIMIT,TIME_LIMIT_90
 #SBATCH --mail-user sirmcmissile47@gmail.com
@@ -22,8 +22,8 @@ mem=120
 
 obsnum=OBSNUM
 base=BASE
-timeSteps=
-channels=
+timeSteps=15
+channels=768
 
 while getopts 't:s:f:' OPTION
 do
@@ -47,11 +47,15 @@ do
     j=$((i+1))
     rm -r ${i}
     mkdir ${i}
-    wsclean -name ${obsnum}-2m-${i} -size 1400 1400 -temp-dir ${i} \
+    wsclean -name ${obsnum}-2m-${i} -size 5000 5000 -temp-dir ${i} \
         -abs-mem ${mem} -interval ${i} ${j} -channels-out ${channels}\
-        -weight natural -scale 5amin ${obsnum}.ms
+        -weight natural -scale 1.25amin ${obsnum}.ms
     rm *image.fits
     rm -r ${i}
 done
+#rm *.ms
+#rm *.metafits
+#rm *.zip
+#rm *gpubox*
 
 }

@@ -2,8 +2,9 @@
 
 usage()
 {
-echo "autoSubmitJobs.sh [-o obsnum] [-a account] [-t tlePath]
+echo "skyanalysis.sh [-o obsnum] [-a account] [-t tlePath] [-n noradid ]
         -a account 		: the account to process
+	-n noradid		: noradid
 	-t tlePath		: the absolute path to TLE files
         -o obsnum               : the obsid" 1>&2;
 exit 1;
@@ -14,10 +15,14 @@ obsnum=
 timeSteps=56
 channels=768
 tlePath=
+noradid=
 
-while getopts 'o:a:t:' OPTION
+while getopts 'o:a:t:n:' OPTION
 do
     case "$OPTION" in
+	n)
+	    noradid=${OPTARG}
+            ;;
 	a)
 	    account=${OPTARG}
             ;;
@@ -46,18 +51,18 @@ fi
 base=/astro/mwasci/sprabu/satellites/MWASSA-Pipeline/
 
 ## copy data ##
-script="${base}queue/rfiseeker_${obsnum}.sh"
-cat ${base}bin/rfiseeker.sh | sed -e "s:OBSNUM:${obsnum}:g" \
+script="${base}queue/skyanalysis_${obsnum}.sh"
+cat ${base}bin/skyanalysis.sh | sed -e "s:OBSNUM:${obsnum}:g" \
                                 -e "s:BASE:${base}:g" > ${script}
-output="${base}queue/logs/rfiseeker_${obsnum}.o%A"
-error="${base}queue/logs/rfiseeker_${obsnum}.e%A"
-sub="sbatch --begin=now+15 --output=${output} --error=${error} -A ${account} ${script} -t ${tlePath} -s ${timeSteps} -f ${channels} "
+output="${base}queue/logs/skyanalysis_${obsnum}.o%A"
+error="${base}queue/logs/skyanalysis_${obsnum}.e%A"
+sub="sbatch --begin=now+15 --output=${output} --error=${error} -A ${account} ${script} -t ${tlePath} -s ${timeSteps} -f ${channels} -n ${noradid}"
 jobid=($(${sub}))
 jobid=${jobid[3]}
 # rename the err/output files as we now know the jobid
 error=`echo ${error} | sed "s/%A/${jobid}/"`
 output=`echo ${output} | sed "s/%A/${jobid}/"`
 
-echo "Submitter RFISeeker job as ${jobid}"
+echo "Submitter SkyAnalysis job as ${jobid}"
 
 

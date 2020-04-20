@@ -2,7 +2,7 @@
 #SBATCH --export=NONE
 #SBATCH -M zeus
 #SBATCH -p workq
-#SBATCH --time=8:00:00
+#SBATCH --time=3:00:00
 #SBATCH --ntasks=4
 #SBATCH --mem=10GB
 #SBATCH -J clear
@@ -28,4 +28,10 @@ do
     rm *${i}-image.fits
     rm *${i}-dirty.fits
 done
+
+#cd ../
+#rm -r /astro/mwasci/sprabu/satellites/MWASSA-Pipeline/processing/${obsnum}
+#mv ${obsnum} /astro/mwasci/sprabu/satellites/MWASSA-Pipeline/processing
+
+
 }

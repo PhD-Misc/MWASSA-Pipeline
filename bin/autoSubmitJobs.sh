@@ -63,11 +63,13 @@ then
 fi
 
 base=/astro/mwasci/sprabu/satellites/MWASSA-Pipeline/
+#basep=/scratch/${account}/sprabu/
+basep=${base}
 
 ## copy data ##
 script="${base}queue/asvo_${obsnum}.sh"
 cat ${base}bin/asvo.sh | sed -e "s:OBSNUM:${obsnum}:g" \
-                                -e "s:BASE:${base}:g" > ${script}
+                                -e "s:BASE:${basep}:g" > ${script}
 
 output="${base}queue/logs/asvo_${obsnum}.o%A"
 error="${base}queue/logs/asvo_${obsnum}.e%A"
@@ -85,7 +87,7 @@ echo "Submitted asvo job as ${jobid1}"
 ## run cotter ##
 script="${base}queue/cotter_${obsnum}.sh"
 cat ${base}/bin/cotter.sh | sed -e "s:OBSNUM:${obsnum}:g" \
-                                 -e "s:BASE:${base}:g" > ${script}
+                                 -e "s:BASE:${basep}:g" > ${script}
 output="${base}queue/logs/cotter_${obsnum}.o%A"
 error="${base}queue/logs/cotter_${obsnum}.e%A"
 sub="sbatch --begin=now+15 --output=${output} --error=${error} --dependency=afterok:${jobid1} -A ${account} ${script} -c ${calibrationPath} "
@@ -101,7 +103,7 @@ echo "Submitter cotter job as ${jobid2}"
 ## run hrimage ##
 script="${base}queue/hrimage_${obsnum}.sh"
 cat ${base}/bin/hrimage.sh | sed -e "s:OBSNUM:${obsnum}:g" \
-                                 -e "s:BASE:${base}:g" > ${script}
+                                 -e "s:BASE:${basep}:g" > ${script}
 output="${base}queue/logs/hrimage_${obsnum}.o%A"
 error="${base}queue/logs/hrimage_${obsnum}.e%A" 
 sub="sbatch --begin=now+15 --output=${output} --error=${error} --dependency=afterok:${jobid2} -A ${account}  ${script} -s ${timeSteps} -f ${channels}"
@@ -117,32 +119,32 @@ echo "Submitter hrimage job as ${jobid3}"
 ## run RFISeeker ##
 script="${base}queue/rfiseeker_${obsnum}.sh"
 cat ${base}/bin/rfiseeker.sh | sed -e "s:OBSNUM:${obsnum}:g" \
-                                 -e "s:BASE:${base}:g" > ${script}
+                                 -e "s:BASE:${basep}:g" > ${script}
 output="${base}queue/logs/rfiseeker_${obsnum}.o%A"
 error="${base}queue/logs/rfiseeker_${obsnum}.e%A"
 sub="sbatch --begin=now+15 --output=${output} --error=${error} -A ${account} --dependency=afterok:${jobid3} ${script} -t ${tlePATH} -s ${timeSteps} -f ${channels}"
 jobid4=($(${sub}))
 jobid4=${jobid4[3]}
-# rename the err/output files as we now know the jobid
+### rename the err/output files as we now know the jobid
 error=`echo ${error} | sed "s/%A/${jobid4}/"`
 output=`echo ${output} | sed "s/%A/${jobid4}/"`
 echo "Submitter RFISeeker job as ${jobid4}"
 
 
 
-## run clear job ##
-script="${base}queue/clear_${obsnum}.sh"
-cat ${base}/bin/clear.sh | sed -e "s:OBSNUM:${obsnum}:g" \
-                                 -e "s:BASE:${base}:g" > ${script}
-output="${base}queue/logs/clear_${obsnum}.o%A"
-error="${base}queue/logs/clear_${obsnum}.e%A"
-sub="sbatch --begin=now+15 --output=${output} --error=${error} -A ${account} --dependency=afterok:${jobid4} ${script}"
-jobid5=($(${sub}))
-jobid5=${jobid5[3]}
-# rename the err/output files as we now know the jobid
-error=`echo ${error} | sed "s/%A/${jobid5}/"`
-output=`echo ${output} | sed "s/%A/${jobid5}/"`
-echo "Submitter clear job as ${jobid4}"
+#### run clear job ##
+#script="${base}queue/clear_${obsnum}.sh"
+#cat ${base}/bin/clear.sh | sed -e "s:OBSNUM:${obsnum}:g" \
+#                                 -e "s:BASE:${basep}:g" > ${script}
+#output="${base}queue/logs/clear_${obsnum}.o%A"
+#error="${base}queue/logs/clear_${obsnum}.e%A"
+#sub="sbatch --begin=now+15 --output=${output} --error=${error} -A ${account} --dependency=afterok:${jobid4} ${script}"
+#jobid5=($(${sub}))
+#jobid5=${jobid5[3]}
+### rename the err/output files as we now know the jobid
+#error=`echo ${error} | sed "s/%A/${jobid5}/"`
+#output=`echo ${output} | sed "s/%A/${jobid5}/"`
+#echo "Submitter clear job as ${jobid4}"
 
 
 
